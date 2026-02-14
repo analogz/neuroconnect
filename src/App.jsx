@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "./hooks/useAuth";
 import { usePosts } from "./hooks/usePosts";
 import { useIsMobile } from "./hooks/useMediaQuery";
@@ -35,14 +35,43 @@ export default function App() {
     if (!isMobile) setShowSidebar(false);
   }, [isMobile]);
 
+  // --- Browser history integration ---
+  const navigate = useCallback((newView, params = {}) => {
+    const state = { view: newView, ...params };
+    history.pushState(state, "", null);
+    setView(newView);
+    if (params.postId !== undefined) setSelectedPostId(params.postId);
+    if (params.userId !== undefined) setSelectedUserId(params.userId);
+  }, []);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    // Replace current state so the first back press doesn't leave the site
+    history.replaceState({ view: "feed" }, "", null);
+
+    const onPopState = (e) => {
+      const state = e.state || { view: "feed" };
+      setView(state.view || "feed");
+      if (state.postId !== undefined) setSelectedPostId(state.postId);
+      if (state.userId !== undefined) setSelectedUserId(state.userId);
+      setShowNewPost(false);
+      setShowSidebar(false);
+    };
+
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, []);
+
   const handleOpenPost = (id) => {
-    setSelectedPostId(id);
-    setView("post");
+    navigate("post", { postId: id });
   };
 
   const handleOpenProfile = (userId) => {
-    setSelectedUserId(userId);
-    setView("profile");
+    navigate("profile", { userId });
+  };
+
+  const handleBack = () => {
+    history.back();
   };
 
   const handleNewPost = (data) => {
@@ -106,7 +135,7 @@ export default function App() {
         }}>
           <div
             style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 10, cursor: "pointer" }}
-            onClick={() => setView("feed")}
+            onClick={() => { if (view !== "feed") navigate("feed"); }}
           >
             <span style={{ fontSize: isMobile ? 16 : 20, color: "#c5a24d", opacity: 0.4 }}>◇</span>
             <span style={{
@@ -408,7 +437,7 @@ export default function App() {
               users={users}
               allPosts={posts}
               currentUser={profile}
-              onBack={() => setView("feed")}
+              onBack={handleBack}
               onLike={toggleLike}
               onSave={toggleSave}
               onEndorse={toggleEndorse}
@@ -425,7 +454,7 @@ export default function App() {
               users={users}
               posts={posts}
               currentUser={profile}
-              onBack={() => setView("feed")}
+              onBack={handleBack}
               onOpenPost={handleOpenPost}
               compact={isMobile}
             />
