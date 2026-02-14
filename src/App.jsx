@@ -10,7 +10,7 @@ import { NewPostModal } from "./components/NewPostModal";
 import { Avatar } from "./components/common";
 
 export default function App() {
-  const { profile, isDemo, isAuthenticated, signInWithGoogle, signOut, saveProfile } = useAuth();
+  const { user, profile, loading, isDemo, isAuthenticated, needsOnboarding, signInWithGoogle, signOut, saveProfile } = useAuth();
   const { posts, users, sortedPosts, addPost, toggleLike, toggleSave, toggleEndorse, togglePriority, addComment } = usePosts(profile);
 
   const [view, setView] = useState("feed");
@@ -33,13 +33,18 @@ export default function App() {
     setShowNewPost(false);
   };
 
-  // Not authenticated or needs onboarding
-  if (!isAuthenticated) {
+  // Loading auth state
+  if (loading) return null;
+
+  // Not authenticated or needs to complete onboarding profile
+  if (!isAuthenticated || needsOnboarding) {
     return (
       <OnboardingScreen
         onComplete={saveProfile}
         onGoogleSignIn={!isDemo ? signInWithGoogle : null}
         isDemo={isDemo}
+        userName={user?.displayName || ""}
+        skipWelcome={needsOnboarding && !isDemo}
       />
     );
   }

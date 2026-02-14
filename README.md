@@ -2,6 +2,9 @@
 
 A community platform for identifying and acting on neurologic care needs — with AAN oversight. Built with React + Vite, backed by Firebase, deployed on Netlify.
 
+**Live site:** https://neuroconnect-app.netlify.app
+**GitHub repo:** https://github.com/analogz/neuroconnect
+
 ## Architecture
 
 ```
@@ -37,84 +40,43 @@ npm run dev
 
 Open http://localhost:5173 and walk through the onboarding.
 
-## Firebase Setup (Production)
+## Firebase
 
-### 1. Create a Firebase Project
+**Console:** https://console.firebase.google.com/u/1/project/neuroconnect-c5a64
+**Project ID:** `neuroconnect-c5a64`
+**Plan:** Spark (free) · **Region:** nam5 (US)
 
-1. Go to https://console.firebase.google.com
-2. Click **Add project** → name it (e.g., `neuroconnect`)
-3. Disable Google Analytics (optional for now)
-4. Click **Create project**
+### Authentication
 
-### 2. Enable Authentication
+- **Provider:** Google Sign-In
+- **Authorized domains:** `localhost`, `neuroconnect-c5a64.firebaseapp.com`, `neuroconnect-c5a64.web.app`, `neuroconnect-app.netlify.app`
 
-1. In the Firebase console, go to **Authentication** → **Sign-in method**
-2. Enable **Google** as a sign-in provider
-3. Add your domain to **Authorized domains** (e.g., `your-site.netlify.app`)
+### Firestore Database
 
-### 3. Create Firestore Database
+- **Mode:** Production
+- **Security rules:** Defined in `firestore.rules`. Users can read any profile but only write their own (`request.auth.uid == userId`). Posts are publicly readable; any authenticated user can create or update; only the author or users with role `'aan'` can delete.
+- **Composite index:** `posts` collection — `type` Ascending + `createdAt` Descending
 
-1. Go to **Firestore Database** → **Create database**
-2. Choose **Start in production mode**
-3. Select a region close to your users
-4. After creation, go to the **Rules** tab and paste the contents of `firestore.rules`
+### Environment Variables
 
-### 4. Get Your Config
-
-1. Go to **Project settings** → **General** → **Your apps**
-2. Click the web icon (`</>`) to register a web app
-3. Copy the config values
-
-### 5. Set Environment Variables
+For local development, copy `.env.example` to `.env.local` and fill in the Firebase values:
 
 ```bash
 cp .env.example .env.local
 ```
 
-Fill in your Firebase values:
+The app reads these `VITE_FIREBASE_*` variables at build time via Vite. See `.env.example` for the full list. Without them, the app runs in demo mode with mock data.
 
-```
-VITE_FIREBASE_API_KEY=AIza...
-VITE_FIREBASE_AUTH_DOMAIN=neuroconnect-xxxxx.firebaseapp.com
-VITE_FIREBASE_PROJECT_ID=neuroconnect-xxxxx
-VITE_FIREBASE_STORAGE_BUCKET=neuroconnect-xxxxx.appspot.com
-VITE_FIREBASE_MESSAGING_SENDER_ID=123456789
-VITE_FIREBASE_APP_ID=1:123456789:web:abcdef
-```
+## Netlify
 
-Run again — the app will now use Firebase auth and Firestore:
+**Dashboard:** https://app.netlify.com/projects/neuroconnect-app
+**Site URL:** https://neuroconnect-app.netlify.app
 
-```bash
-npm run dev
-```
-
-## Deploy to Netlify
-
-### Option A: Git-based (Recommended)
-
-1. Push this repo to GitHub
-2. Go to https://app.netlify.com → **Add new site** → **Import an existing project**
-3. Connect your GitHub repo
-4. Build settings are auto-detected from `netlify.toml`:
-   - Build command: `npm run build`
-   - Publish directory: `dist`
-5. Add environment variables in **Site settings** → **Environment variables**:
-   - Add all `VITE_FIREBASE_*` variables from your `.env.local`
-6. Click **Deploy site**
-
-Every push to `main` will auto-deploy.
-
-### Option B: Manual Deploy
-
-```bash
-npm run build
-```
-
-Drag the `dist/` folder to https://app.netlify.com/drop
-
-### Custom Domain
-
-In Netlify: **Domain management** → **Add custom domain** → follow DNS instructions.
+- **Source:** `github.com/analogz/neuroconnect` (main branch)
+- **Build command:** `npm run build`
+- **Publish directory:** `dist`
+- **Auto-deploy:** Pushes to `main` trigger a new build automatically.
+- **Environment variables:** All `VITE_FIREBASE_*` variables are set in the Netlify dashboard under **Site settings → Environment variables**.
 
 ## Features
 

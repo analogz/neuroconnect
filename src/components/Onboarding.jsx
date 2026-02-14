@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { CONDITIONS, REGIONS } from "../data/mockData";
 
-export function OnboardingScreen({ onComplete, onGoogleSignIn, isDemo }) {
-  const [step, setStep] = useState(0);
-  const [name, setName] = useState("");
+export function OnboardingScreen({ onComplete, onGoogleSignIn, isDemo, userName = "", skipWelcome = false }) {
+  const [step, setStep] = useState(skipWelcome ? 1 : 0);
+  const [name, setName] = useState(userName);
   const [role, setRole] = useState("");
   const [selectedConditions, setSelectedConditions] = useState([]);
   const [region, setRegion] = useState("");
