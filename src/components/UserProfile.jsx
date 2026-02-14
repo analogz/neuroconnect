@@ -1,9 +1,24 @@
 import { Avatar, TypeBadge, StatusBadge } from "./common";
 import { SEED_USERS } from "../data/mockData";
 
-export function UserProfile({ userId, users, posts, onBack, onOpenPost, compact }) {
+export function UserProfile({ userId, users, posts, currentUser, onBack, onOpenPost, compact }) {
   const allUsers = [...SEED_USERS, ...(users || [])];
-  const user = allUsers.find((u) => u.id === userId);
+  let user = allUsers.find((u) => u.id === userId);
+
+  // If not found in seed/custom users, check if it's the current user
+  const currentUid = currentUser?.uid || "demo-user";
+  if (!user && currentUser && (userId === currentUid || userId === "self")) {
+    user = {
+      id: currentUser.uid || "demo-user",
+      name: currentUser.name,
+      role: currentUser.role,
+      avatar: currentUser.name?.split(" ").map((n) => n[0]).join("") || "??",
+      location: currentUser.location,
+      region: currentUser.region,
+      conditions: currentUser.conditions,
+      title: currentUser.role === "aan" ? "AAN Member" : "Community Member",
+    };
+  }
 
   if (!user) {
     return (
@@ -19,8 +34,9 @@ export function UserProfile({ userId, users, posts, onBack, onOpenPost, compact 
     );
   }
 
-  const userPosts = posts.filter((p) => p.authorId === userId);
-  const endorsedPosts = posts.filter((p) => p.aanEndorsedBy === userId);
+  const matchId = user.id;
+  const userPosts = posts.filter((p) => p.authorId === matchId);
+  const endorsedPosts = posts.filter((p) => p.aanEndorsedBy === matchId);
   const initials = user.avatar || user.name?.split(" ").map((n) => n[0]).join("") || "??";
 
   return (

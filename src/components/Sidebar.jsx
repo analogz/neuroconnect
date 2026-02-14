@@ -36,7 +36,7 @@ function AiSuggestionCard({ suggestion, user }) {
   );
 }
 
-export function Sidebar({ user, posts, onSignOut }) {
+export function Sidebar({ user, posts, onSignOut, onOpenProfile }) {
   const trendingConditions = [...new Set(posts.flatMap((p) => p.conditions || []))].slice(0, 5);
   const priorityCount = posts.filter((p) => p.aanPriority).length;
   const endorsedCount = posts.filter((p) => p.aanEndorsed).length;
@@ -51,7 +51,10 @@ export function Sidebar({ user, posts, onSignOut }) {
     <div style={{ width: "100%", maxWidth: 300, flexShrink: 0 }}>
       {/* Profile Card */}
       <div style={{ background: "#fff", borderRadius: 18, padding: "24px", border: "1px solid #e8e4df", marginBottom: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
+        <div
+          style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, cursor: onOpenProfile ? "pointer" : "default" }}
+          onClick={() => onOpenProfile?.("self")}
+        >
           <Avatar initials={userInitials} role={user.role} size={46} />
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 15, fontWeight: 700, color: "#1a2332" }}>{user.name}</div>

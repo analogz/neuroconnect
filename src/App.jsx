@@ -174,8 +174,8 @@ export default function App() {
               compact={isMobile}
             />
             <div
-              onClick={() => isMobile ? setShowSidebar(true) : undefined}
-              style={{ cursor: isMobile ? "pointer" : "default" }}
+              onClick={() => isMobile ? setShowSidebar(true) : handleOpenProfile("self")}
+              style={{ cursor: "pointer" }}
             >
               <Avatar initials={userInitials} role={profile?.role} size={isMobile ? 32 : 34} />
             </div>
@@ -199,7 +199,7 @@ export default function App() {
                 ✕
               </button>
             </div>
-            <Sidebar user={profile} posts={posts} onSignOut={signOut} />
+            <Sidebar user={profile} posts={posts} onSignOut={signOut} onOpenProfile={(id) => { setShowSidebar(false); handleOpenProfile(id); }} />
           </div>
         </>
       )}
@@ -399,7 +399,7 @@ export default function App() {
               </div>
             </div>
 
-            {!isMobile && <Sidebar user={profile} posts={posts} onSignOut={signOut} />}
+            {!isMobile && <Sidebar user={profile} posts={posts} onSignOut={signOut} onOpenProfile={handleOpenProfile} />}
           </>
         ) : (
           view === "post" && selectedPost ? (
@@ -424,6 +424,7 @@ export default function App() {
               userId={selectedUserId}
               users={users}
               posts={posts}
+              currentUser={profile}
               onBack={() => setView("feed")}
               onOpenPost={handleOpenPost}
               compact={isMobile}
