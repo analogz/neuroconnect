@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { SEED_USERS } from "../data/mockData";
 import { Avatar } from "./common";
+import { Bell, AlertTriangle, Star } from "lucide-react";
 
 export function ActivityBell({ posts, currentUser, users, onOpenPost, compact }) {
   const [open, setOpen] = useState(false);
 
   const allUsers = [...SEED_USERS, ...(users || [])];
 
-  // Build activity items from posts the current user authored
   const myPosts = posts.filter(
     (p) => p.authorId === (currentUser?.uid || currentUser?.id || "demo-user")
   );
@@ -15,10 +15,9 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
   const activities = [];
 
   myPosts.forEach((post) => {
-    // Comments on my posts
     (post.comments || []).forEach((comment) => {
       if (comment.authorId !== currentUser?.uid && comment.authorId !== "demo-user") {
-        const commenter = allUsers.find((u) => u.id === comment.authorId) || { name: comment.authorName || "Someone", avatar: comment.authorAvatar || "??" , role: comment.authorRole || "community" };
+        const commenter = allUsers.find((u) => u.id === comment.authorId) || { name: comment.authorName || "Someone", avatar: comment.authorAvatar || "??", role: comment.authorRole || "community" };
         activities.push({
           id: `comment-${comment.id}`,
           type: "comment",
@@ -31,7 +30,6 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
       }
     });
 
-    // Endorsements on my posts
     if (post.aanEndorsed && post.aanEndorsedBy) {
       const endorser = allUsers.find((u) => u.id === post.aanEndorsedBy);
       if (endorser && endorser.id !== currentUser?.uid) {
@@ -46,7 +44,6 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
       }
     }
 
-    // Priority flags on my posts
     if (post.aanPriority) {
       activities.push({
         id: `priority-${post.id}`,
@@ -58,7 +55,6 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
     }
   });
 
-  // Also show engagement on posts where user commented
   posts.forEach((post) => {
     if (myPosts.some((p) => p.id === post.id)) return;
     const userCommented = (post.comments || []).some(
@@ -85,15 +81,14 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
           background: "none",
           border: "none",
           cursor: "pointer",
-          fontSize: compact ? 16 : 18,
-          color: "#7a746b",
+          color: "var(--color-text-muted)",
           padding: "4px 6px",
           position: "relative",
           display: "flex",
           alignItems: "center",
         }}
       >
-        🔔
+        <Bell size={compact ? 18 : 20} />
         {count > 0 && (
           <span style={{
             position: "absolute",
@@ -102,14 +97,13 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
             width: 16,
             height: 16,
             borderRadius: "50%",
-            background: "#d4764e",
+            background: "var(--color-orange)",
             color: "#fff",
             fontSize: 9,
             fontWeight: 700,
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontFamily: "'Manrope', sans-serif",
           }}>
             {count > 9 ? "9+" : count}
           </span>
@@ -129,25 +123,24 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
             width: compact ? "calc(100vw - 32px)" : 360,
             maxHeight: 420,
             overflow: "auto",
-            background: "#fff",
+            background: "var(--color-surface)",
             borderRadius: 18,
-            border: "1px solid #e8e4df",
-            boxShadow: "0 12px 40px #1a233220",
+            border: "1px solid var(--color-border)",
+            boxShadow: "var(--shadow-xl)",
             zIndex: 90,
             padding: "16px",
           }}>
             <h3 style={{
-              fontFamily: "'Manrope', sans-serif",
               fontSize: 14,
               fontWeight: 700,
-              color: "#1a2332",
+              color: "var(--color-text)",
               margin: "0 0 12px",
             }}>
               Activity
             </h3>
 
             {activities.length === 0 ? (
-              <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#9a9488", textAlign: "center", padding: "20px 0" }}>
+              <p style={{ fontSize: 13, color: "var(--color-text-faint)", textAlign: "center", padding: "20px 0" }}>
                 No activity yet. Engagement on your posts will show up here.
               </p>
             ) : (
@@ -156,30 +149,21 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
                   <div
                     key={item.id}
                     onClick={() => { onOpenPost(item.postId); setOpen(false); }}
-                    style={{
-                      display: "flex",
-                      gap: 10,
-                      padding: "10px 12px",
-                      borderRadius: 12,
-                      cursor: "pointer",
-                      transition: "background 0.15s",
-                    }}
-                    onMouseOver={(e) => (e.currentTarget.style.background = "#f8f7f5")}
-                    onMouseOut={(e) => (e.currentTarget.style.background = "transparent")}
+                    className="activity-item"
                   >
                     {item.user ? (
                       <Avatar initials={item.user.avatar} role={item.user.role} size={32} />
                     ) : (
                       <div style={{
-                        width: 32, height: 32, borderRadius: "50%", background: "#f4f2ef",
+                        width: 32, height: 32, borderRadius: "50%", background: "var(--color-bg-muted)",
                         display: "flex", alignItems: "center", justifyContent: "center",
-                        fontSize: 14, flexShrink: 0,
+                        flexShrink: 0,
                       }}>
-                        {item.type === "priority" ? "◈" : "✦"}
+                        {item.type === "priority" ? <AlertTriangle size={14} /> : <Star size={14} />}
                       </div>
                     )}
                     <div style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#1a2332", margin: "0 0 2px", lineHeight: 1.4 }}>
+                      <p style={{ fontSize: 13, color: "var(--color-text)", margin: "0 0 2px", lineHeight: 1.4 }}>
                         {item.type === "comment" && (
                           <><strong>{item.user.name}</strong> commented on <em>{item.postTitle}</em></>
                         )}
@@ -195,9 +179,8 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
                       </p>
                       {item.text && (
                         <p style={{
-                          fontFamily: "'Manrope', sans-serif",
                           fontSize: 12,
-                          color: "#7a746b",
+                          color: "var(--color-text-muted)",
                           margin: 0,
                           overflow: "hidden",
                           textOverflow: "ellipsis",
@@ -206,7 +189,7 @@ export function ActivityBell({ posts, currentUser, users, onOpenPost, compact })
                           "{item.text}"
                         </p>
                       )}
-                      <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: "#b0aaa2" }}>
+                      <span style={{ fontSize: 11, color: "var(--color-scrollbar-hover)" }}>
                         {item.time}
                       </span>
                     </div>

@@ -23,16 +23,16 @@ export const REGIONS = [
 ];
 
 export const POST_TYPES = {
-  need: { label: "Need", color: "#d4764e", icon: "◈" },
-  initiative: { label: "Initiative", color: "#4e8a6e", icon: "◆" },
-  resource: { label: "Resource", color: "#5b7fb8", icon: "◇" },
-  discussion: { label: "Discussion", color: "#8b7bb8", icon: "○" },
+  need: { label: "Need", color: "#d4764e", icon: "AlertTriangle" },
+  initiative: { label: "Initiative", color: "#4e8a6e", icon: "Rocket" },
+  resource: { label: "Resource", color: "#5b7fb8", icon: "BookOpen" },
+  discussion: { label: "Discussion", color: "#8b7bb8", icon: "MessageCircle" },
 };
 
 export const NEED_STATUSES = {
-  open: { label: "Open", color: "#d4764e", icon: "○" },
-  in_progress: { label: "In Progress", color: "#c5a24d", icon: "◐" },
-  resolved: { label: "Resolved", color: "#4e8a6e", icon: "●" },
+  open: { label: "Open", color: "#d4764e", icon: "Circle" },
+  in_progress: { label: "In Progress", color: "#c5a24d", icon: "Clock" },
+  resolved: { label: "Resolved", color: "#4e8a6e", icon: "CheckCircle" },
 };
 
 export const SEED_USERS = [
@@ -316,24 +316,24 @@ export const AI_SUGGESTIONS = [
     id: 1,
     type: "post",
     text: "Based on your interest in {condition}, there's a growing need for specialists in {region}",
-    icon: "✦",
+    icon: "Sparkles",
   },
   {
     id: 2,
     type: "connect",
     text: "3 AAN members near {location} are working on {condition} initiatives",
-    icon: "◎",
+    icon: "Users",
   },
   {
     id: 3,
     type: "trending",
     text: "Telehealth access is trending in your region — 4 new posts this week",
-    icon: "△",
+    icon: "TrendingUp",
   },
   {
     id: 4,
     type: "action",
     text: "A caregiver support gap in {region} matches needs you've engaged with",
-    icon: "◈",
+    icon: "AlertTriangle",
   },
 ];

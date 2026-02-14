@@ -1,5 +1,24 @@
 import { useState } from "react";
 import { POST_TYPES, NEED_STATUSES } from "../data/mockData";
+import {
+  Check, Star, AlertTriangle, Circle, Clock, CheckCircle,
+  Rocket, BookOpen, MessageCircle, Sparkles, Users, TrendingUp,
+  Heart, MessageSquare, Bookmark, ChevronDown,
+  MapPin, Bell, ArrowLeft, Diamond, LogOut, Plus, Search, X,
+} from "lucide-react";
+
+const ICON_MAP = {
+  AlertTriangle, Circle, Clock, CheckCircle, Rocket, BookOpen,
+  MessageCircle, Sparkles, Users, TrendingUp, Check, Star,
+  Heart, MessageSquare, Bookmark, ChevronDown,
+  MapPin, Bell, ArrowLeft, Diamond, LogOut, Plus, Search, X,
+};
+
+export function Icon({ name, size = 14, ...props }) {
+  const Comp = ICON_MAP[name];
+  if (!Comp) return null;
+  return <Comp size={size} {...props} />;
+}
 
 export function Avatar({ initials, role, size = 40 }) {
   const isAan = role === "aan";
@@ -10,15 +29,15 @@ export function Avatar({ initials, role, size = 40 }) {
         height: size,
         borderRadius: "50%",
         background: isAan
-          ? "linear-gradient(135deg, #1a2332, #2a3a52)"
-          : "linear-gradient(135deg, #e8e4df, #d4cfc8)",
+          ? "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))"
+          : "linear-gradient(135deg, var(--color-border), var(--color-border-muted))",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         fontSize: size * 0.32,
-        fontFamily: "'Cormorant Garamond', serif",
+        fontFamily: "var(--font-serif)",
         fontWeight: 700,
-        color: isAan ? "#c5a24d" : "#5a5347",
+        color: isAan ? "var(--color-gold)" : "#5a5347",
         letterSpacing: "0.02em",
         position: "relative",
         flexShrink: 0,
@@ -34,17 +53,15 @@ export function Avatar({ initials, role, size = 40 }) {
             width: size * 0.32,
             height: size * 0.32,
             borderRadius: "50%",
-            background: "#c5a24d",
+            background: "var(--color-gold)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: size * 0.18,
-            color: "#1a2332",
-            fontWeight: 800,
+            color: "var(--color-primary)",
             border: "2px solid #fff",
           }}
         >
-          ✓
+          <Check size={size * 0.18} strokeWidth={3} />
         </div>
       )}
     </div>
@@ -61,17 +78,16 @@ export function TypeBadge({ type, small }) {
         alignItems: "center",
         gap: 4,
         padding: small ? "2px 8px" : "3px 12px",
-        borderRadius: 20,
+        borderRadius: "var(--radius-full)",
         background: t.color + "14",
         color: t.color,
         fontSize: small ? 11 : 12,
         fontWeight: 600,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
-        fontFamily: "'Manrope', sans-serif",
       }}
     >
-      <span style={{ fontSize: small ? 8 : 10 }}>{t.icon}</span> {t.label}
+      <Icon name={t.icon} size={small ? 10 : 12} /> {t.label}
     </span>
   );
 }
@@ -79,23 +95,14 @@ export function TypeBadge({ type, small }) {
 export function AanBadge() {
   return (
     <span
+      className="badge"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-        padding: "2px 10px",
-        borderRadius: 20,
         background: "linear-gradient(135deg, #c5a24d22, #c5a24d11)",
-        color: "#b8932e",
-        fontSize: 11,
-        fontWeight: 700,
-        letterSpacing: "0.05em",
-        textTransform: "uppercase",
-        fontFamily: "'Manrope', sans-serif",
+        color: "var(--color-gold-dark)",
         border: "1px solid #c5a24d33",
       }}
     >
-      <span style={{ fontSize: 10 }}>✦</span> AAN Endorsed
+      <Star size={10} /> AAN Endorsed
     </span>
   );
 }
@@ -103,23 +110,14 @@ export function AanBadge() {
 export function PriorityBadge() {
   return (
     <span
+      className="badge"
       style={{
-        display: "inline-flex",
-        alignItems: "center",
-        gap: 4,
-        padding: "2px 10px",
-        borderRadius: 20,
         background: "#d4764e15",
         color: "#c4603a",
-        fontSize: 11,
-        fontWeight: 700,
-        letterSpacing: "0.05em",
-        textTransform: "uppercase",
-        fontFamily: "'Manrope', sans-serif",
         border: "1px solid #d4764e33",
       }}
     >
-      ◈ Priority Need
+      <AlertTriangle size={10} /> Priority Need
     </span>
   );
 }
@@ -134,18 +132,17 @@ export function StatusBadge({ status }) {
         alignItems: "center",
         gap: 5,
         padding: "3px 12px",
-        borderRadius: 20,
+        borderRadius: "var(--radius-full)",
         background: s.color + "14",
         color: s.color,
         fontSize: 11,
         fontWeight: 700,
         letterSpacing: "0.04em",
         textTransform: "uppercase",
-        fontFamily: "'Manrope', sans-serif",
         border: `1px solid ${s.color}30`,
       }}
     >
-      <span style={{ fontSize: 9 }}>{s.icon}</span> {s.label}
+      <Icon name={s.icon} size={11} /> {s.label}
     </span>
   );
 }
@@ -163,21 +160,20 @@ export function StatusSelector({ currentStatus, onChangeStatus }) {
           alignItems: "center",
           gap: 6,
           padding: "6px 14px",
-          borderRadius: 20,
+          borderRadius: "var(--radius-full)",
           background: current.color + "14",
           color: current.color,
           fontSize: 12,
           fontWeight: 700,
-          fontFamily: "'Manrope', sans-serif",
           border: `1px solid ${current.color}40`,
           cursor: "pointer",
           transition: "all 0.2s",
           letterSpacing: "0.03em",
         }}
       >
-        <span style={{ fontSize: 10 }}>{current.icon}</span>
+        <Icon name={current.icon} size={12} />
         {current.label}
-        <span style={{ fontSize: 10, opacity: 0.6 }}>▾</span>
+        <ChevronDown size={10} style={{ opacity: 0.6 }} />
       </button>
       {open && (
         <div
@@ -185,10 +181,10 @@ export function StatusSelector({ currentStatus, onChangeStatus }) {
             position: "absolute",
             top: "calc(100% + 6px)",
             left: 0,
-            background: "#fff",
+            background: "var(--color-surface)",
             borderRadius: 14,
-            border: "1px solid #e8e4df",
-            boxShadow: "0 8px 24px #1a233218",
+            border: "1px solid var(--color-border)",
+            boxShadow: "var(--shadow-lg)",
             padding: 6,
             zIndex: 20,
             minWidth: 160,
@@ -208,21 +204,20 @@ export function StatusSelector({ currentStatus, onChangeStatus }) {
                 gap: 8,
                 width: "100%",
                 padding: "8px 12px",
-                borderRadius: 10,
+                borderRadius: "var(--radius-sm)",
                 border: "none",
                 background: currentStatus === key ? val.color + "12" : "transparent",
-                color: currentStatus === key ? val.color : "#4a4540",
+                color: currentStatus === key ? val.color : "var(--color-text-secondary)",
                 fontSize: 13,
                 fontWeight: currentStatus === key ? 700 : 500,
-                fontFamily: "'Manrope', sans-serif",
                 cursor: "pointer",
                 transition: "background 0.15s",
                 textAlign: "left",
               }}
             >
-              <span style={{ fontSize: 11, color: val.color }}>{val.icon}</span>
+              <Icon name={val.icon} size={11} style={{ color: val.color }} />
               {val.label}
-              {currentStatus === key && <span style={{ marginLeft: "auto", fontSize: 11 }}>✓</span>}
+              {currentStatus === key && <Check size={11} style={{ marginLeft: "auto" }} />}
             </button>
           ))}
         </div>
@@ -232,27 +227,12 @@ export function StatusSelector({ currentStatus, onChangeStatus }) {
 }
 
 export function ActionButton({ icon, label, active, onClick }) {
-  const [hov, setHov] = useState(false);
   return (
     <button
+      className="btn-ghost"
+      data-active={active ? "true" : undefined}
       onClick={onClick}
-      onMouseOver={() => setHov(true)}
-      onMouseOut={() => setHov(false)}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        gap: 5,
-        padding: "6px 12px",
-        borderRadius: 20,
-        border: "none",
-        background: hov ? "#f4f2ef" : "transparent",
-        color: active ? "#1a2332" : "#9a9488",
-        fontSize: 13.5,
-        fontFamily: "'Manrope', sans-serif",
-        fontWeight: active ? 600 : 400,
-        cursor: "pointer",
-        transition: "all 0.15s",
-      }}
+      style={{ display: "flex", alignItems: "center", gap: 5 }}
     >
       <span style={{ fontSize: 14 }}>{icon}</span>
       {label !== undefined && <span>{label}</span>}
@@ -261,23 +241,19 @@ export function ActionButton({ icon, label, active, onClick }) {
 }
 
 export function AanToolButton({ label, icon, active, onClick, color }) {
-  const [hov, setHov] = useState(false);
   return (
     <button
       onClick={onClick}
-      onMouseOver={() => setHov(true)}
-      onMouseOut={() => setHov(false)}
       style={{
         display: "flex",
         alignItems: "center",
         gap: 4,
         padding: "5px 12px",
-        borderRadius: 20,
-        border: `1px solid ${active ? color : hov ? color + "60" : "#e8e4df"}`,
-        background: active ? color + "15" : hov ? color + "08" : "transparent",
-        color: active ? color : hov ? color : "#9a9488",
+        borderRadius: "var(--radius-full)",
+        border: `1px solid ${active ? color : "var(--color-border)"}`,
+        background: active ? color + "15" : "transparent",
+        color: active ? color : "var(--color-text-faint)",
         fontSize: 12,
-        fontFamily: "'Manrope', sans-serif",
         fontWeight: 600,
         cursor: "pointer",
         transition: "all 0.2s",

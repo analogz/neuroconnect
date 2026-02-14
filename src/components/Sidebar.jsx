@@ -1,5 +1,6 @@
-import { Avatar } from "./common";
+import { Avatar, Icon } from "./common";
 import { AI_SUGGESTIONS } from "../data/mockData";
+import { LogOut, Sparkles } from "lucide-react";
 
 function AiSuggestionCard({ suggestion, user }) {
   const text = suggestion.text
@@ -9,6 +10,7 @@ function AiSuggestionCard({ suggestion, user }) {
 
   return (
     <div
+      className="card-interactive"
       style={{
         padding: "14px 18px",
         borderRadius: 14,
@@ -17,18 +19,15 @@ function AiSuggestionCard({ suggestion, user }) {
         display: "flex",
         alignItems: "flex-start",
         gap: 12,
-        cursor: "pointer",
-        transition: "all 0.2s",
+        boxShadow: "none",
       }}
-      onMouseOver={(e) => (e.currentTarget.style.background = "linear-gradient(135deg, #1a233212, #c5a24d12)")}
-      onMouseOut={(e) => (e.currentTarget.style.background = "linear-gradient(135deg, #1a233208, #c5a24d08)")}
     >
-      <span style={{ fontSize: 16, color: "#c5a24d", marginTop: 1 }}>{suggestion.icon}</span>
+      <Icon name={suggestion.icon} size={16} style={{ color: "var(--color-gold)", marginTop: 1, flexShrink: 0 }} />
       <div>
-        <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13.5, color: "#3a3428", lineHeight: 1.5, margin: 0 }}>
+        <p style={{ fontSize: 14, color: "#3a3428", lineHeight: 1.5, margin: 0 }}>
           {text}
         </p>
-        <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: "#c5a24d", fontWeight: 600, marginTop: 4, display: "inline-block" }}>
+        <span style={{ fontSize: 11, color: "var(--color-gold)", fontWeight: 600, marginTop: 4, display: "inline-block" }}>
           AI Insight →
         </span>
       </div>
@@ -50,22 +49,22 @@ export function Sidebar({ user, posts, onSignOut, onOpenProfile }) {
   return (
     <div style={{ width: "100%", maxWidth: 300, flexShrink: 0 }}>
       {/* Profile Card */}
-      <div style={{ background: "#fff", borderRadius: 18, padding: "24px", border: "1px solid #e8e4df", marginBottom: 16 }}>
+      <div className="card" style={{ padding: "24px", marginBottom: 16 }}>
         <div
           style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, cursor: onOpenProfile ? "pointer" : "default" }}
           onClick={() => onOpenProfile?.("self")}
         >
           <Avatar initials={userInitials} role={user.role} size={46} />
           <div style={{ flex: 1, minWidth: 0 }}>
-            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 15, fontWeight: 700, color: "#1a2332" }}>{user.name}</div>
-            <div style={{ fontFamily: "'Manrope', sans-serif", fontSize: 12, color: "#9a9488" }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "var(--color-text)" }}>{user.name}</div>
+            <div style={{ fontSize: 12, color: "var(--color-text-faint)" }}>
               {user.role === "aan" ? "AAN Member" : "Community Member"} · {user.location}
             </div>
           </div>
         </div>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: onSignOut ? 16 : 0 }}>
           {(user.conditions || []).map((c) => (
-            <span key={c} style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11.5, color: "#7a746b", background: "#f4f2ef", padding: "3px 10px", borderRadius: 20 }}>
+            <span key={c} className="chip" style={{ fontSize: 12 }}>
               {c}
             </span>
           ))}
@@ -77,26 +76,29 @@ export function Sidebar({ user, posts, onSignOut, onOpenProfile }) {
               width: "100%",
               padding: "8px",
               borderRadius: 10,
-              border: "1px solid #e8e4df",
+              border: "1px solid var(--color-border)",
               background: "transparent",
-              color: "#9a9488",
-              fontSize: 12.5,
+              color: "var(--color-text-faint)",
+              fontSize: 13,
               fontWeight: 500,
-              fontFamily: "'Manrope', sans-serif",
               cursor: "pointer",
               transition: "all 0.2s",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: 6,
             }}
           >
-            Sign Out
+            <LogOut size={13} /> Sign Out
           </button>
         )}
       </div>
 
       {/* AI Suggestions */}
-      <div style={{ background: "#fff", borderRadius: 18, padding: "20px 22px", border: "1px solid #e8e4df", marginBottom: 16 }}>
+      <div className="card" style={{ padding: "20px 22px", marginBottom: 16 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 14 }}>
-          <span style={{ color: "#c5a24d", fontSize: 14 }}>✦</span>
-          <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, fontWeight: 700, color: "#1a2332", letterSpacing: "0.04em", textTransform: "uppercase", margin: 0 }}>
+          <Sparkles size={14} style={{ color: "var(--color-gold)" }} />
+          <h3 style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text)", letterSpacing: "0.04em", textTransform: "uppercase", margin: 0 }}>
             Suggested for You
           </h3>
         </div>
@@ -108,57 +110,57 @@ export function Sidebar({ user, posts, onSignOut, onOpenProfile }) {
       </div>
 
       {/* Impact Dashboard */}
-      <div style={{ background: "#fff", borderRadius: 18, padding: "20px 22px", border: "1px solid #e8e4df" }}>
-        <h3 style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, fontWeight: 700, color: "#1a2332", letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 14px" }}>
+      <div className="card" style={{ padding: "20px 22px" }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: "var(--color-text)", letterSpacing: "0.04em", textTransform: "uppercase", margin: "0 0 14px" }}>
           Community Impact
         </h3>
 
         {/* Needs Pipeline */}
         {needPosts.length > 0 && (
           <div style={{ marginBottom: 16 }}>
-            <div style={{ display: "flex", gap: 4, height: 6, borderRadius: 3, overflow: "hidden", marginBottom: 10, background: "#f4f2ef" }}>
-              {resolvedNeeds > 0 && <div style={{ flex: resolvedNeeds, background: "#4e8a6e", borderRadius: 3, transition: "flex 0.5s" }} />}
-              {inProgressNeeds > 0 && <div style={{ flex: inProgressNeeds, background: "#c5a24d", borderRadius: 3, transition: "flex 0.5s" }} />}
-              {openNeeds > 0 && <div style={{ flex: openNeeds, background: "#d4764e", borderRadius: 3, transition: "flex 0.5s" }} />}
+            <div style={{ display: "flex", gap: 4, height: 6, borderRadius: 3, overflow: "hidden", marginBottom: 10, background: "var(--color-bg-muted)" }}>
+              {resolvedNeeds > 0 && <div style={{ flex: resolvedNeeds, background: "var(--color-green)", borderRadius: 3, transition: "flex 0.5s" }} />}
+              {inProgressNeeds > 0 && <div style={{ flex: inProgressNeeds, background: "var(--color-gold)", borderRadius: 3, transition: "flex 0.5s" }} />}
+              {openNeeds > 0 && <div style={{ flex: openNeeds, background: "var(--color-orange)", borderRadius: 3, transition: "flex 0.5s" }} />}
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 11.5, fontFamily: "'Manrope', sans-serif" }}>
-              <span style={{ color: "#d4764e", fontWeight: 600 }}>{openNeeds} Open</span>
-              <span style={{ color: "#c5a24d", fontWeight: 600 }}>{inProgressNeeds} In Progress</span>
-              <span style={{ color: "#4e8a6e", fontWeight: 600 }}>{resolvedNeeds} Resolved</span>
+            <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+              <span style={{ color: "var(--color-orange)", fontWeight: 600 }}>{openNeeds} Open</span>
+              <span style={{ color: "var(--color-gold)", fontWeight: 600 }}>{inProgressNeeds} In Progress</span>
+              <span style={{ color: "var(--color-green)", fontWeight: 600 }}>{resolvedNeeds} Resolved</span>
             </div>
           </div>
         )}
 
         <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#7a746b" }}>Needs Identified</span>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 700, color: "#1a2332" }}>{needPosts.length}</span>
+          <div className="stat-row">
+            <span className="stat-label">Needs Identified</span>
+            <span className="stat-value" style={{ color: "var(--color-text)" }}>{needPosts.length}</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#7a746b" }}>Resolution Rate</span>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 700, color: "#4e8a6e" }}>{resolutionRate}%</span>
+          <div className="stat-row">
+            <span className="stat-label">Resolution Rate</span>
+            <span className="stat-value" style={{ color: "var(--color-green)" }}>{resolutionRate}%</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#7a746b" }}>Priority Flagged</span>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 700, color: "#d4764e" }}>{priorityCount}</span>
+          <div className="stat-row">
+            <span className="stat-label">Priority Flagged</span>
+            <span className="stat-value" style={{ color: "var(--color-orange)" }}>{priorityCount}</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#7a746b" }}>AAN Endorsed</span>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 700, color: "#c5a24d" }}>{endorsedCount}</span>
+          <div className="stat-row">
+            <span className="stat-label">AAN Endorsed</span>
+            <span className="stat-value" style={{ color: "var(--color-gold)" }}>{endorsedCount}</span>
           </div>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, color: "#7a746b" }}>Total Posts</span>
-            <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 14, fontWeight: 700, color: "#1a2332" }}>{posts.length}</span>
+          <div className="stat-row">
+            <span className="stat-label">Total Posts</span>
+            <span className="stat-value" style={{ color: "var(--color-text)" }}>{posts.length}</span>
           </div>
         </div>
 
-        <div style={{ borderTop: "1px solid #f0ece7", paddingTop: 12, marginTop: 12 }}>
-          <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 12, fontWeight: 600, color: "#5a5347", marginBottom: 8, display: "block" }}>
+        <div style={{ borderTop: "1px solid var(--color-border-light)", paddingTop: 12, marginTop: 12 }}>
+          <span style={{ fontSize: 12, fontWeight: 600, color: "#5a5347", marginBottom: 8, display: "block" }}>
             Trending Conditions
           </span>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {trendingConditions.map((c) => (
-              <span key={c} style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11.5, color: "#5b7fb8", background: "#5b7fb812", padding: "3px 10px", borderRadius: 20 }}>
+              <span key={c} style={{ fontSize: 12, color: "var(--color-blue)", background: "#5b7fb812", padding: "3px 10px", borderRadius: "var(--radius-full)" }}>
                 {c}
               </span>
             ))}

@@ -11,6 +11,8 @@ import { NewPostModal } from "./components/NewPostModal";
 import { UserProfile } from "./components/UserProfile";
 import { ActivityBell } from "./components/ActivityFeed";
 import { Avatar } from "./components/common";
+import { Diamond, Plus, Star, Search, X, Bookmark } from "lucide-react";
+import { Sparkles } from "lucide-react";
 
 export default function App() {
   const { user, profile, loading, isDemo, isAuthenticated, needsOnboarding, signInWithGoogle, signOut, saveProfile } = useAuth();
@@ -30,12 +32,10 @@ export default function App() {
     if (isAuthenticated) setTimeout(() => setAppReady(true), 100);
   }, [isAuthenticated]);
 
-  // Close sidebar drawer when switching to desktop
   useEffect(() => {
     if (!isMobile) setShowSidebar(false);
   }, [isMobile]);
 
-  // --- Browser history integration ---
   const navigate = useCallback((newView, params = {}) => {
     const state = { view: newView, ...params };
     history.pushState(state, "", null);
@@ -44,11 +44,8 @@ export default function App() {
     if (params.userId !== undefined) setSelectedUserId(params.userId);
   }, []);
 
-  // Handle browser back/forward buttons
   useEffect(() => {
-    // Replace current state so the first back press doesn't leave the site
     history.replaceState({ view: "feed" }, "", null);
-
     const onPopState = (e) => {
       const state = e.state || { view: "feed" };
       setView(state.view || "feed");
@@ -57,32 +54,17 @@ export default function App() {
       setShowNewPost(false);
       setShowSidebar(false);
     };
-
     window.addEventListener("popstate", onPopState);
     return () => window.removeEventListener("popstate", onPopState);
   }, []);
 
-  const handleOpenPost = (id) => {
-    navigate("post", { postId: id });
-  };
+  const handleOpenPost = (id) => navigate("post", { postId: id });
+  const handleOpenProfile = (userId) => navigate("profile", { userId });
+  const handleBack = () => history.back();
+  const handleNewPost = (data) => { addPost(data); setShowNewPost(false); };
 
-  const handleOpenProfile = (userId) => {
-    navigate("profile", { userId });
-  };
-
-  const handleBack = () => {
-    history.back();
-  };
-
-  const handleNewPost = (data) => {
-    addPost(data);
-    setShowNewPost(false);
-  };
-
-  // Loading auth state
   if (loading) return null;
 
-  // Not authenticated or needs to complete onboarding profile
   if (!isAuthenticated || needsOnboarding) {
     return (
       <OnboardingScreen
@@ -96,12 +78,10 @@ export default function App() {
   }
 
   const feed = sortedPosts(feedFilter === "saved" ? "all" : feedFilter).filter((p) => {
-    // Saved filter
     if (feedFilter === "saved") {
       const uid = profile?.uid || "demo-user";
       if (!p.saved && !p.savedBy?.includes(uid)) return false;
     }
-    // Search filter
     if (!searchQuery.trim()) return true;
     const q = searchQuery.toLowerCase();
     return (
@@ -116,14 +96,9 @@ export default function App() {
   const userInitials = profile?.name?.split(" ").map((n) => n[0]).join("") || "AM";
 
   return (
-    <div style={{ minHeight: "100vh", background: "#f8f7f5", fontFamily: "'Manrope', sans-serif" }}>
-      <link
-        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Manrope:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet"
-      />
-
+    <div style={{ minHeight: "100vh", background: "var(--color-bg)" }}>
       {/* Header */}
-      <header style={{ background: "#fff", borderBottom: "1px solid #e8e4df", position: "sticky", top: 0, zIndex: 50 }}>
+      <header style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)", position: "sticky", top: 0, zIndex: 50 }}>
         <div style={{
           maxWidth: 1200,
           margin: "0 auto",
@@ -137,62 +112,42 @@ export default function App() {
             style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 10, cursor: "pointer" }}
             onClick={() => { if (view !== "feed") navigate("feed"); }}
           >
-            <span style={{ fontSize: isMobile ? 16 : 20, color: "#c5a24d", opacity: 0.4 }}>◇</span>
-            <span style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: isMobile ? 18 : 22,
-              fontWeight: 600,
-              color: "#1a2332",
-              letterSpacing: "-0.01em",
-            }}>
+            <Diamond size={isMobile ? 16 : 20} style={{ color: "var(--color-gold)", opacity: 0.4 }} />
+            <span className="heading" style={{ fontSize: isMobile ? 18 : 22, letterSpacing: "-0.01em" }}>
               NeuroConnect
             </span>
           </div>
 
           <div style={{ display: "flex", alignItems: "center", gap: isMobile ? 10 : 16 }}>
             {!isMobile && isDemo && (
-              <span style={{ fontFamily: "'Manrope', sans-serif", fontSize: 11, color: "#9a9488", padding: "4px 12px", borderRadius: 20, background: "#f4f2ef" }}>
+              <span className="chip" style={{ fontSize: 11, padding: "4px 12px" }}>
                 Demo Mode
               </span>
             )}
             {!isMobile && profile?.role === "aan" && (
               <span
+                className="badge"
                 style={{
                   padding: "5px 14px",
-                  borderRadius: 20,
                   background: "linear-gradient(135deg, #c5a24d22, #c5a24d11)",
-                  color: "#b8932e",
+                  color: "var(--color-gold-dark)",
                   fontSize: 12,
-                  fontWeight: 700,
-                  fontFamily: "'Manrope', sans-serif",
                   letterSpacing: "0.04em",
                   border: "1px solid #c5a24d33",
                 }}
               >
-                ✦ AAN OVERSIGHT
+                <Star size={10} /> AAN OVERSIGHT
               </span>
             )}
             <button
               onClick={() => setShowNewPost(true)}
+              className="btn btn-primary"
               style={{
                 padding: isMobile ? "8px 14px" : "9px 22px",
-                borderRadius: 50,
-                background: "#1a2332",
-                color: "#fff",
-                fontSize: isMobile ? 13 : 13.5,
-                fontWeight: 600,
-                fontFamily: "'Manrope', sans-serif",
-                border: "none",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: 6,
-                transition: "transform 0.15s",
+                fontSize: isMobile ? 13 : 14,
               }}
-              onMouseOver={(e) => (e.currentTarget.style.transform = "translateY(-1px)")}
-              onMouseOut={(e) => (e.currentTarget.style.transform = "")}
             >
-              <span style={{ fontSize: 16, lineHeight: 1 }}>+</span>
+              <Plus size={16} />
               {!isMobile && " New Post"}
             </button>
             <ActivityBell
@@ -218,14 +173,14 @@ export default function App() {
           <div className={`sidebar-overlay ${showSidebar ? "open" : ""}`} onClick={() => setShowSidebar(false)} />
           <div className={`sidebar-drawer ${showSidebar ? "open" : ""}`}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
-              <span style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 18, fontWeight: 600, color: "#1a2332" }}>
+              <span className="heading" style={{ fontSize: 18 }}>
                 Profile & Insights
               </span>
               <button
                 onClick={() => setShowSidebar(false)}
-                style={{ background: "none", border: "none", fontSize: 20, color: "#9a9488", cursor: "pointer", padding: 4 }}
+                style={{ background: "none", border: "none", color: "var(--color-text-faint)", cursor: "pointer", padding: 4 }}
               >
-                ✕
+                <X size={20} />
               </button>
             </div>
             <Sidebar user={profile} posts={posts} onSignOut={signOut} onOpenProfile={(id) => { setShowSidebar(false); handleOpenProfile(id); }} />
@@ -256,30 +211,24 @@ export default function App() {
                   left: 14,
                   top: "50%",
                   transform: "translateY(-50%)",
-                  fontSize: 14,
-                  color: "#9a9488",
+                  color: "var(--color-text-faint)",
                   pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "center",
                 }}>
-                  🔍
+                  <Search size={14} />
                 </span>
                 <input
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search posts, conditions, locations..."
+                  className="input"
                   style={{
-                    width: "100%",
                     padding: isMobile ? "10px 14px 10px 38px" : "11px 16px 11px 40px",
                     borderRadius: 14,
-                    border: "1px solid #e8e4df",
+                    background: "var(--color-surface)",
                     fontSize: isMobile ? 13 : 14,
-                    fontFamily: "'Manrope', sans-serif",
-                    background: "#fff",
-                    outline: "none",
-                    transition: "border-color 0.2s",
-                    boxSizing: "border-box",
                   }}
-                  onFocus={(e) => (e.target.style.borderColor = "#c5a24d")}
-                  onBlur={(e) => (e.target.style.borderColor = "#e8e4df")}
                 />
                 {searchQuery && (
                   <button
@@ -291,49 +240,54 @@ export default function App() {
                       transform: "translateY(-50%)",
                       background: "none",
                       border: "none",
-                      fontSize: 14,
-                      color: "#9a9488",
+                      color: "var(--color-text-faint)",
                       cursor: "pointer",
                       padding: 2,
+                      display: "flex",
+                      alignItems: "center",
                     }}
                   >
-                    ✕
+                    <X size={14} />
                   </button>
                 )}
               </div>
 
               {/* Filter Bar */}
               <div className="filter-scroll">
-                {[{ key: "all", label: "All Posts" }, ...Object.entries(POST_TYPES).map(([k, v]) => ({ key: k, label: v.label })), { key: "saved", label: "⊹ Saved" }].map(
-                  (f) => (
-                    <button
-                      key={f.key}
-                      onClick={() => setFeedFilter(f.key)}
-                      style={{
-                        padding: isMobile ? "6px 14px" : "7px 18px",
-                        borderRadius: 50,
-                        border: feedFilter === f.key ? "2px solid #1a2332" : "1px solid #e8e4df",
-                        background: feedFilter === f.key ? "#1a2332" : "#fff",
-                        color: feedFilter === f.key ? "#fff" : "#7a746b",
-                        fontSize: isMobile ? 12.5 : 13,
-                        fontWeight: 600,
-                        fontFamily: "'Manrope', sans-serif",
-                        cursor: "pointer",
-                        transition: "all 0.2s",
-                        whiteSpace: "nowrap",
-                        flexShrink: 0,
-                      }}
-                    >
-                      {f.label}
-                    </button>
-                  )
-                )}
+                {[
+                  { key: "all", label: "All Posts" },
+                  ...Object.entries(POST_TYPES).map(([k, v]) => ({ key: k, label: v.label })),
+                  { key: "saved", label: "Saved", icon: true },
+                ].map((f) => (
+                  <button
+                    key={f.key}
+                    onClick={() => setFeedFilter(f.key)}
+                    style={{
+                      padding: isMobile ? "6px 14px" : "7px 18px",
+                      borderRadius: 50,
+                      border: feedFilter === f.key ? "2px solid var(--color-primary)" : "1px solid var(--color-border)",
+                      background: feedFilter === f.key ? "var(--color-primary)" : "var(--color-surface)",
+                      color: feedFilter === f.key ? "#fff" : "var(--color-text-muted)",
+                      fontSize: isMobile ? 13 : 13,
+                      fontWeight: 600,
+                      cursor: "pointer",
+                      transition: "all 0.2s",
+                      whiteSpace: "nowrap",
+                      flexShrink: 0,
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    {f.icon && <Bookmark size={12} />} {f.label}
+                  </button>
+                ))}
               </div>
 
               {/* AI Welcome Banner */}
               <div
                 style={{
-                  background: "linear-gradient(135deg, #1a2332, #2a3a52)",
+                  background: "linear-gradient(135deg, var(--color-primary), var(--color-primary-light))",
                   borderRadius: isMobile ? 14 : 18,
                   padding: isMobile ? "16px 18px" : "22px 28px",
                   marginBottom: isMobile ? 16 : 24,
@@ -351,17 +305,14 @@ export default function App() {
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: isMobile ? 18 : 22,
-                    color: "#c5a24d",
                     flexShrink: 0,
                   }}
                 >
-                  ✦
+                  <Sparkles size={isMobile ? 18 : 22} style={{ color: "var(--color-gold)" }} />
                 </div>
                 <div style={{ minWidth: 0 }}>
                   <p style={{
-                    fontFamily: "'Manrope', sans-serif",
-                    fontSize: isMobile ? 13 : 14.5,
+                    fontSize: isMobile ? 13 : 15,
                     color: "#e8e4dfcc",
                     margin: "0 0 2px",
                     lineHeight: 1.5,
@@ -369,7 +320,7 @@ export default function App() {
                     <span style={{ color: "#fff", fontWeight: 600 }}>Personalized for you</span> — Your feed prioritizes{" "}
                     {(profile?.conditions || []).slice(0, 2).join(" & ")} content in {profile?.region}.
                   </p>
-                  <p style={{ fontFamily: "'Manrope', sans-serif", fontSize: isMobile ? 11.5 : 12.5, color: "#c5a24d", margin: 0 }}>
+                  <p style={{ fontSize: isMobile ? 12 : 13, color: "var(--color-gold)", margin: 0 }}>
                     AI adapts as you engage · {feed.length} posts in your feed
                   </p>
                 </div>
@@ -380,10 +331,9 @@ export default function App() {
                 <div style={{
                   textAlign: "center",
                   padding: "40px 20px",
-                  fontFamily: "'Manrope', sans-serif",
-                  color: "#9a9488",
+                  color: "var(--color-text-faint)",
                 }}>
-                  <div style={{ fontSize: 32, marginBottom: 12, opacity: 0.3 }}>⊹</div>
+                  <Bookmark size={32} style={{ marginBottom: 12, opacity: 0.3 }} />
                   <p style={{ fontSize: 15, marginBottom: 4 }}>No saved posts yet</p>
                   <p style={{ fontSize: 13 }}>Tap the save button on any post to bookmark it here.</p>
                 </div>
@@ -392,10 +342,9 @@ export default function App() {
                 <div style={{
                   textAlign: "center",
                   padding: "40px 20px",
-                  fontFamily: "'Manrope', sans-serif",
-                  color: "#9a9488",
+                  color: "var(--color-text-faint)",
                 }}>
-                  <div style={{ fontSize: 32, marginBottom: 12, opacity: 0.3 }}>🔍</div>
+                  <Search size={32} style={{ marginBottom: 12, opacity: 0.3 }} />
                   <p style={{ fontSize: 15, marginBottom: 4 }}>No posts match "{searchQuery}"</p>
                   <p style={{ fontSize: 13 }}>Try different keywords or clear the filter.</p>
                 </div>
