@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CONDITIONS, REGIONS } from "../data/mockData";
-import { Diamond } from "lucide-react";
+import { Logo } from "./common";
 
 export function OnboardingScreen({ onComplete, onGoogleSignIn, isDemo, userName = "", skipWelcome = false }) {
   const [step, setStep] = useState(skipWelcome ? 1 : 0);
@@ -94,7 +94,7 @@ export function OnboardingScreen({ onComplete, onGoogleSignIn, isDemo, userName 
       >
         {step === 0 && (
           <div>
-            <Diamond size={48} style={{ marginBottom: 12, opacity: 0.15, color: "var(--color-text)" }} />
+            <Logo size={52} style={{ color: "var(--color-gold)", opacity: 0.25, marginBottom: 12 }} />
             <h1 className="heading" style={{ fontSize: 42, marginBottom: 8, lineHeight: 1.1 }}>
               NeuroConnect
             </h1>

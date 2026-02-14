@@ -10,8 +10,8 @@ import { Sidebar } from "./components/Sidebar";
 import { NewPostModal } from "./components/NewPostModal";
 import { UserProfile } from "./components/UserProfile";
 import { ActivityBell } from "./components/ActivityFeed";
-import { Avatar } from "./components/common";
-import { Diamond, Plus, Star, Search, X, Bookmark } from "lucide-react";
+import { Avatar, Logo } from "./components/common";
+import { Plus, Star, Search, X, Bookmark } from "lucide-react";
 import { Sparkles } from "lucide-react";
 
 export default function App() {
@@ -112,8 +112,8 @@ export default function App() {
             style={{ display: "flex", alignItems: "center", gap: isMobile ? 8 : 10, cursor: "pointer" }}
             onClick={() => { if (view !== "feed") navigate("feed"); }}
           >
-            <Diamond size={isMobile ? 16 : 20} style={{ color: "var(--color-gold)", opacity: 0.4 }} />
-            <span className="heading" style={{ fontSize: isMobile ? 18 : 22, letterSpacing: "-0.01em" }}>
+            <Logo size={isMobile ? 20 : 24} style={{ color: "var(--color-gold)" }} />
+            <span className="heading" style={{ fontSize: isMobile ? 18 : 22, letterSpacing: "0.01em" }}>
               NeuroConnect
             </span>
           </div>

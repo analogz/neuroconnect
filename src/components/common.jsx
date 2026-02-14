@@ -4,15 +4,42 @@ import {
   Check, Star, AlertTriangle, Circle, Clock, CheckCircle,
   Rocket, BookOpen, MessageCircle, Sparkles, Users, TrendingUp,
   Heart, MessageSquare, Bookmark, ChevronDown,
-  MapPin, Bell, ArrowLeft, Diamond, LogOut, Plus, Search, X,
+  MapPin, Bell, ArrowLeft, LogOut, Plus, Search, X,
 } from "lucide-react";
 
 const ICON_MAP = {
   AlertTriangle, Circle, Clock, CheckCircle, Rocket, BookOpen,
   MessageCircle, Sparkles, Users, TrendingUp, Check, Star,
   Heart, MessageSquare, Bookmark, ChevronDown,
-  MapPin, Bell, ArrowLeft, Diamond, LogOut, Plus, Search, X,
+  MapPin, Bell, ArrowLeft, LogOut, Plus, Search, X,
 };
+
+export function Logo({ size = 24, className, style }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 32 32"
+      fill="none"
+      className={className}
+      style={style}
+      aria-hidden="true"
+    >
+      {/* Stem */}
+      <line x1="16" y1="27" x2="16" y2="15" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" />
+      {/* Left branch */}
+      <path d="M16 15 Q10 11 6 5" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      {/* Right branch */}
+      <path d="M16 15 Q22 11 26 5" stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      {/* Junction */}
+      <circle cx="16" cy="15" r="3.2" fill="currentColor" />
+      {/* Terminals */}
+      <circle cx="6" cy="5" r="2.4" fill="currentColor" />
+      <circle cx="26" cy="5" r="2.4" fill="currentColor" />
+      <circle cx="16" cy="27" r="2.4" fill="currentColor" />
+    </svg>
+  );
+}
 
 export function Icon({ name, size = 14, ...props }) {
   const Comp = ICON_MAP[name];
