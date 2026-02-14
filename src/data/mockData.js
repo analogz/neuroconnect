@@ -29,6 +29,12 @@ export const POST_TYPES = {
   discussion: { label: "Discussion", color: "#8b7bb8", icon: "○" },
 };
 
+export const NEED_STATUSES = {
+  open: { label: "Open", color: "#d4764e", icon: "○" },
+  in_progress: { label: "In Progress", color: "#c5a24d", icon: "◐" },
+  resolved: { label: "Resolved", color: "#4e8a6e", icon: "●" },
+};
+
 export const SEED_USERS = [
   {
     id: "u1",
@@ -117,6 +123,7 @@ export const SEED_POSTS = [
     id: "p1",
     authorId: "u2",
     type: "need",
+    status: "in_progress",
     title: "No Movement Disorder Specialist Within 90 Miles",
     body: "Our county lost its only neurologist last year. The nearest movement disorder specialist is now a 90-mile drive. For elderly Parkinson's patients without reliable transportation, this is a crisis. We need telehealth options or a visiting specialist program.",
     location: "Rural Georgia",
@@ -171,6 +178,7 @@ export const SEED_POSTS = [
     id: "p3",
     authorId: "u6",
     type: "need",
+    status: "open",
     title: "Alzheimer's Caregiver Support Groups Disappearing",
     body: "Three of the five Alzheimer's caregiver support groups in the Phoenix metro area have closed in the past year due to funding cuts. The remaining two are overwhelmed. We're losing a critical lifeline for families.",
     location: "Phoenix, AZ",
@@ -217,6 +225,7 @@ export const SEED_POSTS = [
     id: "p5",
     authorId: "u4",
     type: "need",
+    status: "open",
     title: "ALS Patients Need Better Assistive Tech Access",
     body: "Insurance coverage for communication devices and eye-tracking systems is inconsistent and slow. Patients are waiting 6+ months for approval while their condition progresses. We need a streamlined pathway and better coverage advocacy.",
     location: "Denver, CO",

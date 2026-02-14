@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { CONDITIONS, POST_TYPES } from "../data/mockData";
 
-export function NewPostModal({ user, onClose, onSubmit }) {
+export function NewPostModal({ user, onClose, onSubmit, fullScreen }) {
   const [type, setType] = useState("need");
   const [title, setTitle] = useState("");
   const [body, setBody] = useState("");
@@ -33,35 +33,37 @@ export function NewPostModal({ user, onClose, onSubmit }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "#1a233260",
-        backdropFilter: "blur(8px)",
+        background: fullScreen ? "#fff" : "#1a233260",
+        backdropFilter: fullScreen ? "none" : "blur(8px)",
         display: "flex",
-        alignItems: "center",
+        alignItems: fullScreen ? "stretch" : "center",
         justifyContent: "center",
         zIndex: 100,
-        padding: 24,
+        padding: fullScreen ? 0 : 24,
       }}
-      onClick={onClose}
+      onClick={fullScreen ? undefined : onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
           background: "#fff",
-          borderRadius: 24,
-          padding: "32px 36px",
-          maxWidth: 580,
+          borderRadius: fullScreen ? 0 : 24,
+          padding: fullScreen ? "16px 20px" : "32px 36px",
+          maxWidth: fullScreen ? "100%" : 580,
           width: "100%",
-          maxHeight: "85vh",
+          maxHeight: fullScreen ? "100%" : "85vh",
           overflow: "auto",
-          boxShadow: "0 24px 64px #1a233230",
+          boxShadow: fullScreen ? "none" : "0 24px 64px #1a233230",
+          display: "flex",
+          flexDirection: "column",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 24 }}>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: 26, fontWeight: 600, color: "#1a2332", margin: 0 }}>New Post</h2>
-          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 20, color: "#9a9488", cursor: "pointer" }}>✕</button>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: fullScreen ? 16 : 24 }}>
+          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: fullScreen ? 22 : 26, fontWeight: 600, color: "#1a2332", margin: 0 }}>New Post</h2>
+          <button onClick={onClose} style={{ background: "none", border: "none", fontSize: 20, color: "#9a9488", cursor: "pointer", padding: 4 }}>✕</button>
         </div>
 
-        <div style={{ marginBottom: 20 }}>
+        <div style={{ marginBottom: fullScreen ? 14 : 20 }}>
           <label style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, fontWeight: 600, color: "#5a5347", marginBottom: 8, display: "block" }}>Post Type</label>
           <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
             {Object.entries(POST_TYPES).map(([key, val]) => (
@@ -69,12 +71,12 @@ export function NewPostModal({ user, onClose, onSubmit }) {
                 key={key}
                 onClick={() => setType(key)}
                 style={{
-                  padding: "8px 16px",
+                  padding: fullScreen ? "7px 14px" : "8px 16px",
                   borderRadius: 50,
                   border: type === key ? `2px solid ${val.color}` : "1px solid #e8e4df",
                   background: type === key ? val.color + "12" : "#fff",
                   color: type === key ? val.color : "#7a746b",
-                  fontSize: 13,
+                  fontSize: fullScreen ? 12.5 : 13,
                   fontWeight: 600,
                   fontFamily: "'Manrope', sans-serif",
                   cursor: "pointer",
@@ -94,7 +96,7 @@ export function NewPostModal({ user, onClose, onSubmit }) {
 
         <div style={{ marginBottom: 16 }}>
           <label style={{ fontFamily: "'Manrope', sans-serif", fontSize: 13, fontWeight: 600, color: "#5a5347", marginBottom: 8, display: "block" }}>Details</label>
-          <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Describe the need, initiative, or resource in detail..." rows={5} style={{ ...inputStyle, resize: "vertical" }} onFocus={(e) => (e.target.style.borderColor = "#c5a24d")} onBlur={(e) => (e.target.style.borderColor = "#e8e4df")} />
+          <textarea value={body} onChange={(e) => setBody(e.target.value)} placeholder="Describe the need, initiative, or resource in detail..." rows={fullScreen ? 4 : 5} style={{ ...inputStyle, resize: "vertical" }} onFocus={(e) => (e.target.style.borderColor = "#c5a24d")} onBlur={(e) => (e.target.style.borderColor = "#e8e4df")} />
         </div>
 
         <div style={{ marginBottom: 16 }}>
@@ -142,6 +144,7 @@ export function NewPostModal({ user, onClose, onSubmit }) {
             border: "none",
             cursor: title.trim() && body.trim() ? "pointer" : "default",
             transition: "background 0.2s",
+            marginTop: "auto",
           }}
         >
           Publish Post

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { POST_TYPES } from "../data/mockData";
+import { POST_TYPES, NEED_STATUSES } from "../data/mockData";
 
 export function Avatar({ initials, role, size = 40 }) {
   const isAan = role === "aan";
@@ -121,6 +121,113 @@ export function PriorityBadge() {
     >
       ◈ Priority Need
     </span>
+  );
+}
+
+export function StatusBadge({ status }) {
+  const s = NEED_STATUSES[status];
+  if (!s) return null;
+  return (
+    <span
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: 5,
+        padding: "3px 12px",
+        borderRadius: 20,
+        background: s.color + "14",
+        color: s.color,
+        fontSize: 11,
+        fontWeight: 700,
+        letterSpacing: "0.04em",
+        textTransform: "uppercase",
+        fontFamily: "'Manrope', sans-serif",
+        border: `1px solid ${s.color}30`,
+      }}
+    >
+      <span style={{ fontSize: 9 }}>{s.icon}</span> {s.label}
+    </span>
+  );
+}
+
+export function StatusSelector({ currentStatus, onChangeStatus }) {
+  const [open, setOpen] = useState(false);
+  const current = NEED_STATUSES[currentStatus] || NEED_STATUSES.open;
+
+  return (
+    <div style={{ position: "relative", display: "inline-block" }}>
+      <button
+        onClick={(e) => { e.stopPropagation(); setOpen(!open); }}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 6,
+          padding: "6px 14px",
+          borderRadius: 20,
+          background: current.color + "14",
+          color: current.color,
+          fontSize: 12,
+          fontWeight: 700,
+          fontFamily: "'Manrope', sans-serif",
+          border: `1px solid ${current.color}40`,
+          cursor: "pointer",
+          transition: "all 0.2s",
+          letterSpacing: "0.03em",
+        }}
+      >
+        <span style={{ fontSize: 10 }}>{current.icon}</span>
+        {current.label}
+        <span style={{ fontSize: 10, opacity: 0.6 }}>▾</span>
+      </button>
+      {open && (
+        <div
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            background: "#fff",
+            borderRadius: 14,
+            border: "1px solid #e8e4df",
+            boxShadow: "0 8px 24px #1a233218",
+            padding: 6,
+            zIndex: 20,
+            minWidth: 160,
+          }}
+        >
+          {Object.entries(NEED_STATUSES).map(([key, val]) => (
+            <button
+              key={key}
+              onClick={(e) => {
+                e.stopPropagation();
+                onChangeStatus(key);
+                setOpen(false);
+              }}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                width: "100%",
+                padding: "8px 12px",
+                borderRadius: 10,
+                border: "none",
+                background: currentStatus === key ? val.color + "12" : "transparent",
+                color: currentStatus === key ? val.color : "#4a4540",
+                fontSize: 13,
+                fontWeight: currentStatus === key ? 700 : 500,
+                fontFamily: "'Manrope', sans-serif",
+                cursor: "pointer",
+                transition: "background 0.15s",
+                textAlign: "left",
+              }}
+            >
+              <span style={{ fontSize: 11, color: val.color }}>{val.icon}</span>
+              {val.label}
+              {currentStatus === key && <span style={{ marginLeft: "auto", fontSize: 11 }}>✓</span>}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
 

@@ -77,6 +77,7 @@ export function usePosts(profile) {
         saves: 0,
         savedBy: [],
         comments: [],
+        status: type === "need" ? "open" : null,
         aanEndorsed: false,
         aanEndorsedBy: null,
         aanPriority: false,
@@ -192,6 +193,23 @@ export function usePosts(profile) {
     [posts, profile, isDemo]
   );
 
+  const updateStatus = useCallback(
+    async (postId, newStatus) => {
+      if (isDemo) {
+        setPosts((prev) =>
+          prev.map((p) =>
+            p.id === postId ? { ...p, status: newStatus } : p
+          )
+        );
+        return;
+      }
+
+      const postRef = doc(db, "posts", postId);
+      await updateDoc(postRef, { status: newStatus });
+    },
+    [isDemo]
+  );
+
   const addComment = useCallback(
     async (postId, text) => {
       const comment = {
@@ -260,6 +278,7 @@ export function usePosts(profile) {
     toggleSave,
     toggleEndorse,
     togglePriority,
+    updateStatus,
     addComment,
   };
 }

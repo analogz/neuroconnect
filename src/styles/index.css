@@ -17,6 +17,7 @@ body {
   background: #f8f7f5;
   color: #1a2332;
   line-height: 1.5;
+  overflow-x: hidden;
 }
 
 ::selection {
@@ -50,4 +51,63 @@ button {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #b0aaa2;
+}
+
+/* Horizontal scroll container for filter pills on mobile */
+.filter-scroll {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .filter-scroll {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 0 16px;
+    margin-bottom: 16px;
+  }
+  .filter-scroll::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* Sidebar drawer overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background: #1a233240;
+  z-index: 60;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.sidebar-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 320px;
+  max-width: 85vw;
+  background: #f8f7f5;
+  z-index: 70;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  padding: 20px 16px;
+}
+
+.sidebar-drawer.open {
+  transform: translateX(0);
 }
